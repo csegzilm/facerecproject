@@ -13,7 +13,7 @@ const FileUpload = () => {
     const animationFrameId2 = useRef(null);  // Hozzáadva a requestAnimationFrame ID tárolására
 
 
-    const handleResponse = async(formData) => {
+    const handleResponse = async (formData) => {
         try {
             const response = await axios.post("http://localhost:8080/api/images/upload", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
@@ -52,42 +52,42 @@ const FileUpload = () => {
         const canvas = canvasRef.current;
         const context = canvas?.getContext("2d");
         const video = videoRef.current;
-    
+
         if (!canvas || !context || !video) return;
-    
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.clearRect(0, 0, canvas.width, canvas.height);
-    
+
         facesCoordinates.forEach((face) => {
             context.strokeStyle = "red";
             context.lineWidth = 2;
             context.strokeRect(face.x, face.y, face.width, face.height);
         });
-    
+
         animationFrameId1.current = requestAnimationFrame(drawFaces); //Az ID eltárolása
     }, [facesCoordinates]);
 
-    
+
 
     const detectFacesLive = useCallback(async () => {
         if (!isStreaming) return;
-    
+
         try {
             const frame = await captureFrame(); // Várjuk meg a blobot
             const formData = new FormData();
             formData.append("file", new File([frame], "frame.png", { type: "image/png" }));
-    
+
             await handleResponse(formData); // Feltöltés a backendre
-    
+
         } catch (error) {
             console.error("Error capturing frame:", error);
         }
-    
+
         //drawFaces();
         animationFrameId2.current = requestAnimationFrame(detectFacesLive); // Következő képkocka feldolgozása
     }, [isStreaming]);
-    
+
 
     const startCamera = useCallback(async () => {
         try {
@@ -135,11 +135,11 @@ const FileUpload = () => {
         const canvas = canvasRef.current;
         const video = videoRef.current;
         const context = canvas.getContext("2d");
-    
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    
+
         return new Promise((resolve) => {
             canvas.toBlob(blob => resolve(blob), "image/png");
         });
@@ -152,7 +152,7 @@ const FileUpload = () => {
         const formData = new FormData();
         formData.append("file", image);
 
-       handleResponse(formData);
+        handleResponse(formData);
     };
 
     useEffect(() => {
@@ -172,7 +172,7 @@ const FileUpload = () => {
                 <input {...getInputProps()} />
                 {image ? <p>{image.name}</p> : <p>Húzd ide a képet vagy kattints a feltöltéshez</p>}
             </div>
-    
+
             {/* Kamera és vászon a valós idejű arcfelismeréshez */}
             <div style={{ position: "relative", maxWidth: "100%" }}>
                 <video
@@ -195,16 +195,29 @@ const FileUpload = () => {
                     }}
                 />
             </div>
-    
+
             {/* Kamera vezérlő gomb */}
             <button onClick={() => {
                 setIsStreaming((prev) => !prev);
                 setFacesCoordinates([]);
                 setMessage("");
-                }}>
+            }}
+
+                style={{
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    backgroundColor: isStreaming ? "#ff4d4d" : "#4caf50",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: "pointer",
+                    margin: "10px",
+                    transition: "background-color 0.3s"
+                }}
+            >
                 {isStreaming ? "Stop" : "Start"} Camera
             </button>
-    
+
             {/* Feltöltött kép és az arcfelismerés eredményei */}
             {image && (
                 <div style={{ position: "relative", display: "inline-block", maxWidth: "100%" }}>
@@ -229,17 +242,29 @@ const FileUpload = () => {
                     ))}
                 </div>
             )}
-    
+
             {/* Kép elemzésének gombja */}
-            <button onClick={uploadFile} disabled={!image}>
+            <button onClick={uploadFile} disabled={!image}
+                style={{
+                    padding: "10px 20px",
+                    fontSize: "16px",
+                    backgroundColor: image ? "#0077cc" : "#cccccc",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "5px",
+                    cursor: image ? "pointer" : "not-allowed",
+                    margin: "10px",
+                    transition: "background-color 0.3s"
+                }}
+            >
                 Analyze
             </button>
-    
+
             {/* Üzenetek megjelenítése */}
             <p>{message}</p>
         </div>
     );
-    
+
 
 
 
