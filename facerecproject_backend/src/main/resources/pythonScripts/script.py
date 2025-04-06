@@ -63,25 +63,27 @@ for box in bounding_boxes:
 # Arcok detektálása és embedding kinyerése
 genders = []
 emotions = []
-races = []
+ages = []
 
 # start_time = time.time()  # script elejére
 for box in bounding_boxes_analysis:
     left, top, right, bottom = map(int, box)
     face_image = image.crop((left, top, right, bottom))
 
-    analysis = DeepFace.analyze(np.array(face_image), actions=["gender", "emotion", "race"], detector_backend="skip", silent=True, enforce_detection=False)
+    face_image = face_image.convert('RGB') # Azert kell, mert a webkamerabol kicsit mas formatumban jon a kep
+
+    analysis = DeepFace.analyze(np.array(face_image), actions=["gender", "emotion", "age"], detector_backend="skip", silent=True, enforce_detection=False)
     #print(analysis)
     gender = analysis[0]["dominant_gender"]
     emotion = analysis[0]["dominant_emotion"]
-    race = analysis[0]["dominant_race"]
+    age = analysis[0]["age"]
     #print(emotion)
     #print(gender)
     #print(race)
 
     genders.append(gender)
     emotions.append(emotion)
-    races.append(race)
+    ages.append(str(age))
 
 
 
@@ -89,5 +91,5 @@ for box in bounding_boxes_analysis:
 json_output = json.dumps({"bounding_boxes": bounding_boxes,
                           "genders": genders,
                           "emotions": emotions,
-                          "races": races})
+                          "races": ages})
 print(json_output)

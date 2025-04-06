@@ -7,11 +7,36 @@ const FileUpload = () => {
     const [message, setMessage] = useState("");
     const [facesCoordinates, setFacesCoordinates] = useState([]);
     const [isStreaming, setIsStreaming] = useState(false);
+    const [socket, setWebSocket] = useState(null);
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const animationFrameId1 = useRef(null);  // Hozzáadva a requestAnimationFrame ID tárolására
     const animationFrameId2 = useRef(null);  // Hozzáadva a requestAnimationFrame ID tárolására
 
+    useEffect(() => {
+        // WebSocket kapcsolat létrehozása
+        const ws = new WebSocket('ws://localhost:8080/ws'); // A backend URL-je
+    
+        // WebSocket események
+        ws.onopen = () => {
+          console.log("WebSocket kapcsolat létrejött.");
+        };
+    
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log("Kapott üzenet:", data);
+        };
+    
+        ws.onclose = () => {
+          console.log("WebSocket kapcsolat lezárva.");
+        };
+    
+        setSocket(ws);
+    
+        return () => {
+          ws.close();
+        };
+      }, []);
 
     const handleResponse = async (formData) => {
         try {
