@@ -63,6 +63,12 @@ const FileUpload = () => {
             context.strokeStyle = "red";
             context.lineWidth = 2;
             context.strokeRect(face.x, face.y, face.width, face.height);
+
+            // Megjelenítjük az arc attribútumokat (gender, emotion, race) is
+            const infoText = `${face.gender || "Unknown Gender"} | ${face.emotion || "Unknown Emotion"} | ${face.race || "Unknown Race"}`;
+            context.fillStyle = "white";
+            context.font = "8px Arial";
+            context.fillText(infoText, face.x, face.y - 10); // A szöveget az arc felett jelenítjük meg
         });
 
         animationFrameId1.current = requestAnimationFrame(drawFaces); //Az ID eltárolása
@@ -238,8 +244,26 @@ const FileUpload = () => {
                                 border: "2px solid red",
                                 boxSizing: "border-box",
                             }}
-                        />
+                        >
+                            {/* Megjelenítjük az arc attribútumokat a képen */}
+                            <div
+                                style={{
+                                    position: "relative",
+                                    top: -20,
+                                    left: 0,
+                                    width: 100,
+                                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                                    color: "white",
+                                    fontSize: "9px",
+                                    padding: "2px 5px",
+                                    borderRadius: "5px",
+                                }}
+                            >
+                                {`${face.gender || "Unknown"}, ${face.emotion || "Unknown"}, ${face.race || "Unknown"}`}
+                            </div>
+                        </div>
                     ))}
+
                 </div>
             )}
 
@@ -264,13 +288,6 @@ const FileUpload = () => {
             <p>{message}</p>
         </div>
     );
-
-
-
-
-
-
-
 };
 
 export default FileUpload;

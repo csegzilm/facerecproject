@@ -63,7 +63,7 @@ public class Yolov8FaceDetectionService {
             String inputData = "5"; // Példa adat
 
             // A ProcessBuilder létrehozása a Python script meghívásához
-            ProcessBuilder processBuilder = new ProcessBuilder("C:/Users/csegz/Desktop/Egyetem/2024-2025 II. felev/Onlab/PythonSample/venv/Scripts/python.exe", "src/main/resources/pythonScripts/script.py");
+            ProcessBuilder processBuilder = new ProcessBuilder("C:/Users/lorik/Desktop/Egyetem/6_2024_25_II_felev/Onlab/python proba/.venv/Scripts/python.exe", "src/main/resources/pythonScripts/script.py");
 
             // A Python script futtatása
             Process process = processBuilder.start();
@@ -86,7 +86,7 @@ public class Yolov8FaceDetectionService {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println("Python output: " + line);
-                    if (offset == 3) {
+                    if (offset == 4) {
                         scriptOutput.append(line);
                     }
                     offset++;
@@ -105,8 +105,13 @@ public class Yolov8FaceDetectionService {
 
         JSONObject jsonObject = new JSONObject(scriptOutput.toString());
         JSONArray boundingBoxes = jsonObject.getJSONArray("bounding_boxes");
+        JSONArray genders = jsonObject.getJSONArray("genders");
+        JSONArray emotions = jsonObject.getJSONArray("emotions");
+        JSONArray races = jsonObject.getJSONArray("races");
 
-        List<Map<String, Object>> facesCoordinates = new ArrayList<>();
+
+
+        List<Map<String, Object>> facesCoordinates = new ArrayList<>(); // amúgy mostmár nem csak a faces
 
         for (int i = 0; i < boundingBoxes.length(); i++) {
             JSONArray box = boundingBoxes.getJSONArray(i);
@@ -119,7 +124,10 @@ public class Yolov8FaceDetectionService {
                         "x", xmin,
                         "y", ymin,
                         "width", xmax - xmin,
-                        "height", ymax - ymin)
+                        "height", ymax - ymin,
+                        "gender", genders.getString(i),
+                        "emotion", emotions.getString(i),
+                        "race", races.getString(i))
                 );
         }
 
