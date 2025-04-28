@@ -7,11 +7,12 @@ const FileUpload = () => {
     const [message, setMessage] = useState("");
     const [facesCoordinates, setFacesCoordinates] = useState([]);
     const [isStreaming, setIsStreaming] = useState(false);
-    const [socket, setWebSocket] = useState(null);
+    const [socket, setSocket] = useState(null);
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
     const animationFrameId1 = useRef(null);  // Hozzáadva a requestAnimationFrame ID tárolására
     const animationFrameId2 = useRef(null);  // Hozzáadva a requestAnimationFrame ID tárolására
+    const timeoutId = useRef(null);
 
     useEffect(() => {
         // WebSocket kapcsolat létrehozása
@@ -19,19 +20,49 @@ const FileUpload = () => {
     
         // WebSocket események
         ws.onopen = () => {
-          console.log("WebSocket kapcsolat létrejött.");
+          console.log("WebSocket kapcsolat létrejött (frontend).");
         };
     
+        ws.onclose = (event) => {
+            console.log("WebSocket kapcsolat lezárult: ", event);
+        };
+
+        ws.onerror = (error) => {
+            console.error("WebSocket hiba:", error);
+            if (error.message) {
+                console.error("Hibaüzenet:", error.message);
+              }        
+        };
+
         ws.onmessage = (event) => {
-          const data = JSON.parse(event.data);
-          console.log("Kapott üzenet:", data);
+            try {
+              const data = JSON.parse(event.data);
+              console.log("Kapott üzenet:", data);
+              if (data.bounding_boxes && Array.isArray(data.bounding_boxes)) {
+                const coordinates = data.bounding_boxes.map((box, idx) => ({
+                  x: box[0],
+                  y: box[1],
+                  width: box[2] - box[0],
+                  height: box[3] - box[1],
+                  gender: data.genders?.[idx],
+                  emotion: data.emotions?.[idx],
+                  age: data.ages?.[idx]
+                }));
+                setFacesCoordinates(coordinates);
+              }
+            } catch (e) {
+              console.error("Hiba a JSON feldolgozása közben:", e);
+            }
+          };
+
+           // window.onbeforeunload: kapcsolat lezárása frissítés előtt
+        window.onbeforeunload = () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.close(); // A kapcsolat lezárása
+            }
         };
     
-        ws.onclose = () => {
-          console.log("WebSocket kapcsolat lezárva.");
-        };
-    
-        setSocket(ws);
+        setSocket(ws); //Így a socket típusa WebSocket lesz
     
         return () => {
           ws.close();
@@ -101,24 +132,72 @@ const FileUpload = () => {
 
 
 
-    const detectFacesLive = useCallback(async () => {
-        if (!isStreaming) return;
+    // const detectFacesLive = useCallback(async () => {
+    //     if (!isStreaming || !socket) return;
 
-        try {
-            const frame = await captureFrame(); // Várjuk meg a blobot
-            const formData = new FormData();
-            formData.append("file", new File([frame], "frame.png", { type: "image/png" }));
+    //     try {
+    //         const frame = await captureFrame(); // Várjuk meg a blobot
+    //         const formData = new FormData();
+    //         formData.append("file", new File([frame], "frame.png", { type: "image/png" }));
 
-            await handleResponse(formData); // Feltöltés a backendre
+    //         await handleResponse(formData); // Feltöltés a backendre
 
-        } catch (error) {
-            console.error("Error capturing frame:", error);
+    //     } catch (error) {
+    //         console.error("Error capturing frame:", error);
+    //     }
+
+    //     //drawFaces();
+    //     animationFrameId2.current = requestAnimationFrame(detectFacesLive); // Következő képkocka feldolgozása
+    // }, [isStreaming]);
+
+    const detectFacesLive = useCallback(() => {
+        if (!isStreaming || !socket) return;
+
+        if (!isStreaming || !socket || socket.readyState !== WebSocket.OPEN) { //azért fontos, mert ha leállítottuk a streaminget, akkor az animationframet is törölnünk kell, különben a régi instance örökké true-nak fogja venni az isstreaminget és köldeni fogja az üzeneteket
+            if (animationFrameId2.current) {
+                cancelAnimationFrame(animationFrameId2.current);
+                animationFrameId2.current = null;
+            }
+            if (timeoutId.current) {
+                clearTimeout(timeoutId.current);
+                timeoutId.current = null;
+            }
+            return;
         }
+    
+        const canvas = canvasRef.current;
+        const video = videoRef.current;
+        const context = canvas.getContext("2d");
+    
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+        const base64Data = canvas.toDataURL("image/jpeg", 0.7); // kisebb fájlméret
+        // console.log("base64 méret:", base64Data.length);
+        // if (socket?.readyState === WebSocket.OPEN) {
+        //     //socket.send(base64Data);
+        //     socket.send("test_message");
+        // } else {
+        //     console.warn("WebSocket nem nyitott, nem küldünk képet.");
+        // }
 
-        //drawFaces();
-        animationFrameId2.current = requestAnimationFrame(detectFacesLive); // Következő képkocka feldolgozása
-    }, [isStreaming]);
-
+        canvas.toBlob(blob => {
+            if (socket?.readyState === WebSocket.OPEN) {
+                socket.send(blob); // BLOB-ot közvetlenül elküldjük!
+                // blob.arrayBuffer().then((buffer) => {
+                //     socket.send(buffer); // << itt binárisan küldjük
+                //     console.log("bináris adat elküldve");
+                // });
+            }
+        }, "image/jpeg", 0.7);
+    
+        // ne túl sűrűn küldjünk képeket
+        timeoutId.current = setTimeout(() => {
+            animationFrameId2.current = requestAnimationFrame(detectFacesLive);
+        }, 1000); // csak 1 FPS-enként küldünk képet
+    }, [isStreaming, socket]);
+    
 
     const startCamera = useCallback(async () => {
         try {
@@ -149,6 +228,11 @@ const FileUpload = () => {
         if (animationFrameId2.current) {
             cancelAnimationFrame(animationFrameId2.current);
             animationFrameId2.current = null;  // Reset ID
+        }
+
+        if (timeoutId.current) { // ÚJ!
+            clearTimeout(timeoutId.current);
+            timeoutId.current = null;
         }
     }, [videoRef]);
 

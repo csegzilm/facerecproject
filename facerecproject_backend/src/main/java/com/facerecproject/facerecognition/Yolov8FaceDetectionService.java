@@ -57,22 +57,15 @@ public class Yolov8FaceDetectionService {
 
         StringBuilder scriptOutput = new StringBuilder();
 
-        //Csak proba:
         try {
             // Az adat, amit át akarunk adni a Python scriptnek
-            String inputData = "5"; // Példa adat
+            // String inputData = "5"; // Példa adat
 
             // A ProcessBuilder létrehozása a Python script meghívásához
             ProcessBuilder processBuilder = new ProcessBuilder("C:/Users/lorik/Desktop/Egyetem/6_2024_25_II_felev/Onlab/python proba/.venv/Scripts/python.exe", "src/main/resources/pythonScripts/script.py");
 
             // A Python script futtatása
             Process process = processBuilder.start();
-//
-//            OutputStream outputStream = process.getOutputStream();
-//            outputStream.write(bytes); // Byte adat küldése a Python szkriptnek
-//            outputStream.flush(); // Az adat tényleges küldése
-            // outputStream.close(); // Az output stream bezárása
-
 
             try (OutputStream os = process.getOutputStream()) {
                 os.write(bytes); // imageData egy byte tömb
@@ -130,124 +123,6 @@ public class Yolov8FaceDetectionService {
                         "race", races.getString(i))
                 );
         }
-
-//        for (Detection detection : detections) {
-//                System.out.println("Detected: " + detection); // csak logolas
-//                facesCoordinates.add(Map.of(
-//                        "x", (int)detection.getBbox()[0],
-//                        "y", (int)detection.getBbox()[1],
-//                        "width", (int)detection.getBbox()[2],
-//                        "height", (int)detection.getBbox()[3])
-//                );
-//            }
-
-
-//        //Pythonos rész:
-//        ProcessBuilder processBuilder = new ProcessBuilder("python", "C:/Users/csegz/Desktop/Egyetem/2024-2025 II. felev/Onlab/facerecproject/facerecproject_backend/src/main/resources/pythonScripts/__init__.py");
-//        Process process = processBuilder.start();
-
-//        OutputStream os = process.getOutputStream();
-//        // Először küldjük a kép méretét (4 bájt)
-//        os.write(ByteBuffer.allocate(4).putInt(bytes.length).array());
-//
-//        // Majd küldjük a tényleges kép bájtjait
-//        os.write(bytes);
-//        os.flush();
-//        os.close();
-
-
-
-
-
-//        ImageClassificationTranslator translatorNew =
-//                ImageClassificationTranslator.builder()
-//                        .addTransform(new Resize(224, 224))
-//                        .addTransform(new ToTensor())
-//                        .build();
-//
-//        Translator<Image, DetectedObjects> translatorNew2 = YoloV8Translator.builder()
-//                .addTransform(new Resize(224, 224))
-//                .addTransform(new ToTensor())
-//                .build();
-//
-//        Criteria<Image, DetectedObjects> criteria =
-//                Criteria.builder()
-//                        .setTypes (Image.class, DetectedObjects.class)
-//                        .optModelPath(Paths.get("C:/Users/csegz/Desktop/Egyetem/2024-2025 II. felev/Onlab/facerecproject/facerecproject_backend/YOLOv8-Face-Detection/"))
-//                        .optModelName("model.pt")
-//                        //.optEngine("OnnxRuntime")
-//                        .optEngine("PyTorch")
-//                        .optTranslator(translatorNew2)
-//                        .optProgress (new ProgressBar())
-//                        .build();
-//
-//
-//
-//        try (ZooModel<Image, DetectedObjects> model = ModelZoo.loadModel(criteria);
-//             Predictor<Image, DetectedObjects> predictor = model.newPredictor()) {
-//            DetectedObjects result = predictor.predict(img);
-//            System.out.println(result);
-//    }
-
-
-
-
-//
-//        System.out.println(file.getOriginalFilename());
-//        System.out.println(file.getContentType());
-//        String format = file.getContentType();
-//
-//        // Modell betöltése
-//        Path modelPath = Paths.get("src/main/resources/models/yolov8_face_detection_model_compatible.onnx");  // Az ONNX modell fájlja
-//        Model model = Model.newInstance(modelPath.toString());
-//
-//        // Kép betöltése
-//        //Image img = ImageFactory.getInstance().fromFile(Paths.get("/path/to/image.jpg"));  // Betöltés
-//
-//        Image img = null;
-//
-//        byte[] bytes = file.getBytes();
-//        try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes)) {
-//            // Kép betöltése ByteArrayInputStream segítségével
-//            img = ImageFactory.getInstance().fromInputStream(byteArrayInputStream);
-//            System.out.println("Kép sikeresen betöltve.");
-//        } catch (IOException e) {
-//            System.err.println("Hiba a fájl beolvasásakor: " + e.getMessage());
-//        }
-//
-////        try (InputStream inputStream = file.getInputStream()) {
-////            BufferedImage bufferedImage = ImageIO.read(inputStream);
-////            if (bufferedImage == null) {
-////                System.out.println("Image is null");
-////                throw new RuntimeException();
-////            }
-////            // Betöltjük a képet az InputStream-ból
-////            img =  ImageFactory.getInstance().fromInputStream(inputStream);
-////        }
-//        NDManager manager = NDManager.newBaseManager();
-//        NDArray arrayFromImg = Objects.requireNonNull(img).toNDArray(manager);
-//
-//        // Translator létrehozása (ez konvertálja a bemeneti adatokat és kimenetet)
-//        Translator<Image, List<Detection>> translator = new DetectionTranslator();
-//
-//        // Prediktor létrehozása
-//        try (Predictor<Image, List<Detection>> predictor = model.newPredictor(translator)) {
-//            // Predikció végrehajtása
-//            List<Detection> detections = predictor.predict(img);
-//
-//            //Az eddigiekhez illeszkedo visszateresi ertek megkonstrulasa
-//
-//            // Detektált objektumok feldolgozása
-//            for (Detection detection : detections) {
-//                System.out.println("Detected: " + detection); // csak logolas
-//                facesCoordinates.add(Map.of(
-//                        "x", (int)detection.getBbox()[0],
-//                        "y", (int)detection.getBbox()[1],
-//                        "width", (int)detection.getBbox()[2],
-//                        "height", (int)detection.getBbox()[3])
-//                );
-//            }
-//        }
 
         return facesCoordinates;
     }
