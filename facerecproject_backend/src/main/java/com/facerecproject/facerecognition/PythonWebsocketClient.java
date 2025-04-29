@@ -29,7 +29,7 @@ public class PythonWebsocketClient {
                 return;
             } catch (Exception e) {
                 attempts++;
-                System.out.println("--- Python szerver még nem elérhető... próbálkozás: " + attempts);
+                System.out.println("[JAVA] --- Python szerver még nem elérhető... próbálkozás: " + attempts);
                 try {
                     Thread.sleep(delayMs);
                 } catch (InterruptedException ie) {
@@ -38,7 +38,7 @@ public class PythonWebsocketClient {
                 }
             }
         }
-        System.err.println("Nem sikerült kapcsolódni a Python WebSocket szerverhez.");
+        System.err.println("[JAVA] Nem sikerült kapcsolódni a Python WebSocket szerverhez.");
     }
 
     public void sendImage(String base64Image, Consumer<String> onResponse) {
@@ -46,7 +46,7 @@ public class PythonWebsocketClient {
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendText(base64Image);
         } else {
-            System.err.println("WebSocket kapcsolat nincs nyitva a Python felé.");
+            System.err.println("[JAVA] WebSocket kapcsolat nincs nyitva a Python felé.");
         }
     }
 
@@ -55,7 +55,7 @@ public class PythonWebsocketClient {
         if (session != null && session.isOpen()) {
             session.getAsyncRemote().sendBinary(ByteBuffer.wrap(bytes));
         } else {
-            System.err.println("WebSocket nincs nyitva.");
+            System.err.println("[JAVA] WebSocket nincs nyitva a Python felé.");
         }
     }
 
@@ -73,12 +73,12 @@ public class PythonWebsocketClient {
 
     @OnError
     public void onError(Session session, Throwable throwable) {
-        System.err.println("Python WebSocket hiba: " + throwable.getMessage());
+        System.err.println("[JAVA] Python WebSocket hiba: " + throwable.getMessage());
     }
 
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
-        System.out.println("Python WebSocket kapcsolat lezárva: " + closeReason);
+        System.out.println("[JAVA] Python WebSocket kapcsolat lezárva: " + closeReason);
     }
 
 

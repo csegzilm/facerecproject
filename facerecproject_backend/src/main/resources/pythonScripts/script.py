@@ -91,5 +91,5 @@ for box in bounding_boxes_analysis:
 json_output = json.dumps({"bounding_boxes": bounding_boxes,
                           "genders": genders,
                           "emotions": emotions,
-                          "races": ages})
+                          " races": ages})
 print(json_output)

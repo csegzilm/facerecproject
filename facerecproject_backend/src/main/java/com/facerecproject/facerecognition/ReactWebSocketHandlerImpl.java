@@ -37,7 +37,7 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
                 try {
                     session.sendMessage(new TextMessage(response));
                 } catch (Exception e) {
-                    System.err.println("❌ Nem működött a válasz a frontendnek: " + e.getMessage());
+                    System.err.println("[JAVA] Nem működött a válasz a frontendnek: " + e.getMessage());
                 }
             });
         }
@@ -58,7 +58,7 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
             try {
                 session.sendMessage(new TextMessage(response));
             } catch (Exception e) {
-                System.err.println("❌ Nem működött a válasz a frontendnek: " + e.getMessage());
+                System.err.println("[JAVA] Nem működött a válasz a frontendnek: " + e.getMessage());
             }
         });
 
@@ -79,7 +79,7 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
 
-            System.out.println("✅ Bináris üzenetet kaptam: méret = " + bytes.length + " byte");
+            System.out.println("[JAVA] Bináris üzenetet érkezett: méret = " + bytes.length + " byte");
 
             //itt még nem küldjük tovább, csak válaszolunk
             // session.sendMessage(new TextMessage("{\"status\": \"ok\", \"info\": \"binary received\"}"));
@@ -88,12 +88,12 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
             if (!isAgeBusy) {
                 isAgeBusy = true;
                 pythonClientAge.sendBinary(bytes, (String response) -> {
-                    System.out.println("Válasz jött a pythonClientAgetől.");
+                    System.out.println("[JAVA] Válasz jött a pythonClientAgetől.");
                     isAgeBusy = false;
                     try {
                         session.sendMessage(new TextMessage(response));
                     } catch (Exception e) {
-                        System.err.println("❌ Nem működött a válasz a frontendnek: " + e.getMessage());
+                        System.err.println("[JAVA] Nem működött a válasz a frontendnek: " + e.getMessage());
                     }
                 });
             }
@@ -101,12 +101,12 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
             if (!isEmotionBusy) {
                 isEmotionBusy = true;
                 pythonClientEmotion.sendBinary(bytes, (String response) -> {
-                    System.out.println("Válasz jött a pythonClientEmotiontől.");
+                    System.out.println("[JAVA] Válasz jött a pythonClientEmotiontől.");
                     isEmotionBusy = false;
                     try {
                         session.sendMessage(new TextMessage(response));
                     } catch (Exception e) {
-                        System.err.println("❌ Nem működött a válasz a frontendnek: " + e.getMessage());
+                        System.err.println("[JAVA] Nem működött a válasz a frontendnek: " + e.getMessage());
                     }
                 });
             }
@@ -114,18 +114,18 @@ public class ReactWebSocketHandlerImpl extends TextWebSocketHandler {
             if (!isGenderBusy) {
                 isGenderBusy = true;
                 pythonClientGender.sendBinary(bytes, (String response) -> {
-                    System.out.println("Válasz jött a pythonClientGendertől.");
+                    System.out.println("[JAVA] Válasz jött a pythonClientGendertől.");
                     isGenderBusy = false;
                     try {
                         session.sendMessage(new TextMessage(response));
                     } catch (Exception e) {
-                        System.err.println("❌ Nem működött a válasz a frontendnek: " + e.getMessage());
+                        System.err.println("[JAVA] Nem működött a válasz a frontendnek: " + e.getMessage());
                     }
                 });
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Hiba bináris üzenet kezelés közben: " + e.getMessage());
+            System.err.println("[JAVA] Hiba bináris üzenet kezelés közben: " + e.getMessage());
         }
     }
 

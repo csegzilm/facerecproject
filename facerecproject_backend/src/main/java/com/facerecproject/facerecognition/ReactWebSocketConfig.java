@@ -27,7 +27,7 @@ public class ReactWebSocketConfig implements WebSocketConfigurer {
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
         container.setMaxTextMessageBufferSize(500_000);   // max 500 KB szöveg
-        container.setMaxBinaryMessageBufferSize(500_000); // max 500 KB bináris
+        container.setMaxBinaryMessageBufferSize(500_000); // max 500 KB bináris - ezt külön át kellett állítani
         return container;
     }
 }
