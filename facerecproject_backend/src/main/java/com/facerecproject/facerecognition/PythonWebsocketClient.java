@@ -6,7 +6,7 @@ import java.net.URI;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-import static com.facerecproject.facerecognition.PythonScriptHandler.startPythonScripts;
+import static com.facerecproject.facerecognition.PythonScriptHandler.startPythonScript;
 
 @ClientEndpoint
 public class PythonWebsocketClient {
@@ -14,8 +14,8 @@ public class PythonWebsocketClient {
     private Session session;
     private Consumer<String> callback;
 
-    public PythonWebsocketClient(String uri) {
-        startPythonScripts();
+    public PythonWebsocketClient(String uri, String pythonScriptName) {
+        startPythonScript(pythonScriptName);
         connectWithRetry(uri, 10, 1000); // max 10 próbálkozás, 1s várakozás
     }
 

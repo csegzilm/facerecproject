@@ -10,7 +10,7 @@ from supervision import Detections
 from deepface import DeepFace
 import numpy as np
 
-
+# ws://localhost:8767-es
 
 print("Python WebSocket szerver indul...")
 
@@ -19,14 +19,9 @@ model_path = hf_hub_download(repo_id="arnabdhar/YOLOv8-Face-Detection", filename
 model = YOLO(model_path)
 
 
-async def process_image(base64_image):
+async def process_image(image):
     try:
-        # Base64 -> kép
-        header, encoded = base64_image.split(",", 1)
-        img_data = base64.b64decode(encoded)
-        image = Image.open(BytesIO(img_data)).convert("RGB")
-
-        # YOLO detekció
+       # YOLO detekció
         results = model(image)[0]
         detections = Detections.from_ultralytics(results)
 
@@ -40,15 +35,13 @@ async def process_image(base64_image):
 
             analysis = DeepFace.analyze(
                 np.array(face),
-                actions=["gender", "emotion", "age"],
+                actions=["emotion"],
                 detector_backend="skip",
                 enforce_detection=False,
                 silent=True
             )[0]
 
-            genders.append(analysis["dominant_gender"])
             emotions.append(analysis["dominant_emotion"])
-            ages.append(int(analysis["age"]))
 
         return json.dumps({
             "bounding_boxes": bounding_boxes,
@@ -69,19 +62,22 @@ async def process_image(base64_image):
 
 
 async def handler(websocket):
-    print("📥 Java backend csatlakozott.")
+    print("Java backend csatlakozott.")
     try:
         async for message in websocket:
-            print("📸 Kép érkezett.")
-            result = await process_image(message)
-            await websocket.send(result)
+            if isinstance(message, bytes):  # Bináris adat
+                image = Image.open(BytesIO(message)).convert("RGB")
+                result = await process_image(image)
+                await websocket.send(result)
+            else:
+                print("Nem bináris üzenet érkezett.")
     except websockets.exceptions.ConnectionClosed:
-        print("🔌 Kapcsolat megszakadt.")
+        print("Kapcsolat megszakadt.")
 
 
 async def main():
-    server = await websockets.serve(handler, "localhost", 8765)
-    print("Python WebSocket szerver fut a ws://localhost:8765 címen")
+    server = await websockets.serve(handler, "localhost", 8767)
+    print("Python WebSocket szerver fut a ws://localhost:8767 címen")
     await asyncio.Future()  # végtelen futás
 
 

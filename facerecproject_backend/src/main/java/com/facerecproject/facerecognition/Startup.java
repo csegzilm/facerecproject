@@ -10,7 +10,7 @@ public class StartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        new Thread(PythonScriptHandler::startPythonScripts).start();
+        new Thread(PythonScriptHandler::startPythonScript).start();
     }
 
 
