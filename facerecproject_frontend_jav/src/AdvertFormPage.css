@@ -1,0 +1,136 @@
+/* Alap űrlap stílusok */
+body {
+    background-color: #000; /* Az egész alkalmazás háttere fekete */
+    color: white;  /* Fehér szöveg a fekete háttéren */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #282c34; /* Sötét háttér a formhoz */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* H1 stílus */
+h1 {
+    font-size: 2rem;
+    color: #61dafb; /* Kék színű cím */
+    margin-bottom: 20px;
+}
+
+/* Labelek stílusa */
+label {
+    font-size: 1.1rem;
+    color: #fff; /* Fehér színű label */
+    font-weight: bold;
+    margin-right: 15px; /* Különbség a label és az input között */
+    width: 150px; /* A label szélessége */
+    text-align: right; /* Jobbra igazítjuk a label-t */
+}
+
+/* Az űrlap mezői, input, select, textarea */
+input,
+select,
+textarea {
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #333; /* Sötét háttér az input mezőknek */
+    color: white;
+}
+
+/* Specifikus beállítások a szám inputra */
+input[type="number"],
+textarea {
+    color: white;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #61dafb;
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #4caf50; /* Használj hexadecimális színkódot */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.3s; /* Helyes szintaxis a transitionhez */
+}
+
+
+button:hover {
+    background-color: #4fa3e5;
+}
+
+/* Kép feltöltése */
+input[type="file"] {
+    padding: 5px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+}
+
+/* Select box és inputok */
+select {
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 15px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #333;
+    color: white;
+}
+
+select:focus {
+    border-color: #61dafb;
+    outline: none;
+}
+
+/* Erősebb elválasztó vonalak */
+div {
+    margin-bottom: 15px;
+}
+
+/* Különböző form elemek közötti távolság */
+form div:last-child {
+    margin-bottom: 0;
+}
+
+/* A label és input mezők egymás mellett, rugalmas elrendezés */
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    margin-right: 15px; /* Hely a label és input között */
+    width: 150px; /* A label szélessége */
+    text-align: right;
+}

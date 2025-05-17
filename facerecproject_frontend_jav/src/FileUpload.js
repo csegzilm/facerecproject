@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
+import { adjustAdvertData } from './AdvertDisplayPage.js';
 
-const FileUpload = () => {
+const FileUpload = ({ setRealTimeData }) => {
     const [image, setImage] = useState(null);
     const [message, setMessage] = useState("");
     const [facesCoordinates, setFacesCoordinates] = useState([]);
@@ -16,7 +17,7 @@ const FileUpload = () => {
 
     const [emotionResults, setEmotionResults] = useState([]); // sorrend: happyCount, sadCount, fearCount, neutralCount
     const [ageResults, setAgeResults] = useState(0);
-    const [genderResults, setGenderResults] = useState([]);
+    const [genderResults, setGenderResults] = useState([]); // sorrend: férfiak, nők
 
 
 
@@ -29,9 +30,9 @@ const FileUpload = () => {
             console.log("WebSocket kapcsolat létrejött (frontend).");
         };
 
-        ws.onclose = (event) => {
-            console.log("WebSocket kapcsolat lezárult: ", event);
-        };
+        // ws.onclose = (event) => {
+        //     console.log("WebSocket kapcsolat lezárult: ", event);
+        // };
 
         ws.onerror = (error) => {
             console.error("WebSocket hiba:", error);
@@ -55,7 +56,6 @@ const FileUpload = () => {
                         age: data.ages?.[idx]
                     }));
 
-                    //Új rész
                     if (data.genders && data.genders.length > 0) {
                         // van legalább egy gender
                         setGenderResults(evaluateGender(data.genders));
@@ -68,6 +68,16 @@ const FileUpload = () => {
                         // van legalább egy age
                         setAgeResults(evaluateAge(data.ages));
                     }
+
+
+                    const dataToSend = {
+                        happyCount: emotionResults[0], sadCount: emotionResults[1], fearCount: emotionResults[2], neutralCount: emotionResults[3], //Happy, sad, fear, neutral
+                        peopleCount: genderResults[0] + genderResults[1], //összes ember száma
+                        maleCount: genderResults[0], femaleCount: genderResults[1], //férfiak száma, nők száma
+                        averageAge: ageResults
+                    };
+
+                    //setRealTimeData(dataToSend);
 
                     setFacesCoordinates(coordinates);
                 }
@@ -89,6 +99,24 @@ const FileUpload = () => {
             ws.close();
         };
     }, []);
+
+    // Az állapotok frissítése után frissítjük a valós idejű adatokat
+    useEffect(() => {
+        if (emotionResults.length > 0 && genderResults.length > 0 && ageResults !== 0) {
+            const dataToSend = {
+                happyCount: emotionResults[0],
+                sadCount: emotionResults[1],
+                fearCount: emotionResults[2],
+                neutralCount: emotionResults[3],
+                peopleCount: genderResults[0] + genderResults[1],
+                maleCount: genderResults[0],
+                femaleCount: genderResults[1],
+                averageAge: ageResults
+            };
+
+            setRealTimeData(dataToSend); // Frissítjük a szülő adatát
+        }
+    }, [emotionResults, genderResults, ageResults, setRealTimeData]);
 
     const handleResponse = async (formData) => {
         try {
@@ -342,6 +370,8 @@ const FileUpload = () => {
 
     return (
         <div>
+            <h1 style={{padding: "20px"}}>Videó</h1>
+
             {/* Kép feltöltési terület */}
             <div {...getRootProps()} style={{ border: "2px dashed gray", padding: "10px", cursor: "pointer" }}>
                 <input {...getInputProps()} />
@@ -352,7 +382,7 @@ const FileUpload = () => {
             <div style={{ position: "relative", maxWidth: "100%" }}>
                 <video
                     ref={videoRef}
-                    src="/crowd1.mp4" // Új idiglenes sor: a videó fájl elérési útja
+                    src="/crowd2.mp4" // Új idiglenes sor: a videó fájl elérési útja
                     style={{
                         maxWidth: "100%",
                         display: isStreaming ? "block" : "none",

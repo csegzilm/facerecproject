@@ -28,6 +28,8 @@
   color: #61dafb;
 }
 
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -36,3 +38,92 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+
+
+
+/* Alap stílusok */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Flexbox elrendezés a két komponens számára */
+.content {
+  display: flex;
+  justify-content: space-around;  /* A két komponenst egymás mellett helyezi el */
+  margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* A komponensek szélessége és elrendezés */
+.file-upload-container, .advert-display-container {
+  width: 45%;  /* Mindkét komponensnek 45%-os szélességet adunk */
+  padding: 20px;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  margin: 0 10px;
+  background-color: #282c34; /* A háttér színe */
+  border-radius: 8px; /* Lekerekített sarkok */
+}
+
+/* Kép stílusai, ha a képet más konténerben szeretnéd megjeleníteni */
+img {
+  max-width: 45%;  /* A kép maximális szélessége a konténer szélességéhez */
+  height: auto;  /* A magasság arányosan változik a szélességhez */
+  object-fit: contain;  /* A kép nem deformálódik, illeszkedik a konténerbe */
+}
+
+/* Reszponzív elrendezés, ha a képernyő túl kicsi */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;  /* Kis képernyőkön egy oszlopba rendezzük */
+    align-items: center;
+  }
+
+  .file-upload-container, .advert-display-container {
+    width: 90%;  /* A komponensek szélessége 90% a kis képernyőkön */
+    margin-bottom: 20px;
+  }
+}
+
