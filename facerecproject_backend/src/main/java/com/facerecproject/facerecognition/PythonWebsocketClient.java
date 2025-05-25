@@ -1,5 +1,6 @@
 package com.facerecproject.facerecognition;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.websocket.*;
 
 import java.net.URI;
@@ -13,9 +14,10 @@ public class PythonWebsocketClient {
 
     private Session session;
     private Consumer<String> callback;
+    Process scriptProcess;
 
     public PythonWebsocketClient(String uri, String pythonScriptName) {
-        startPythonScript(pythonScriptName);
+        scriptProcess = startPythonScript(pythonScriptName);
         connectWithRetry(uri, 10, 1000); // max 10 próbálkozás, 1s várakozás
     }
 
@@ -79,6 +81,13 @@ public class PythonWebsocketClient {
     @OnClose
     public void onClose(Session session, CloseReason closeReason) {
         System.out.println("[JAVA] Python WebSocket kapcsolat lezárva: " + closeReason);
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        if (scriptProcess != null && scriptProcess.isAlive()) {
+            scriptProcess.destroy();
+        }
     }
 
 

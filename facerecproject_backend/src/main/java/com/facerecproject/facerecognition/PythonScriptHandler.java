@@ -1,5 +1,7 @@
 package com.facerecproject.facerecognition;
 
+import jakarta.annotation.PreDestroy;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,7 +9,7 @@ import java.io.InputStreamReader;
 public class PythonScriptHandler {
     private static Process process;
 
-    public static void startPythonScript(String pythonScript) {
+    public static Process startPythonScript(String pythonScript) {
         try {
             String path = ".venv/Scripts/python.exe"; //Nem hardcodeolt, ez így a jó
             //Az "-u" arra van, hogy a python kimenete azonnal kiíródjon (unbuffered mód), mert másképp bufferelődik és nem írja ki azonnal
@@ -30,12 +32,14 @@ public class PythonScriptHandler {
             }).start();
 
             System.out.println("[JAVA] startPythonScript: Python WebSocket szerver inicializáció elindult.");
-
         } catch (IOException e) {
             System.err.println("Hiba a Python script indításakor: " + e.getMessage());
         }
+        return process;
+
     }
 
+    @PreDestroy
     public static void stopPythonScripts() {
          if (process != null && process.isAlive()) {
             process.destroy();
