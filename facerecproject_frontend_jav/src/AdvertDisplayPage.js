@@ -134,11 +134,29 @@ const AdvertDisplayPage = ({ realTimeData }) => {
         return adGender === "Man" ? realGenderRatio : (1 - realGenderRatio);
     }
 
-    function calculateAgeMatch(adMinAge, adMaxAge, realAge) {
-        if (realAge >= adMinAge && realAge <= adMaxAge) {
-            return 1;
+    function calculateAgeMatch(adPrefAgeGroup, realAge) {
+        // if (realAge >= adMinAge && realAge <= adMaxAge) {
+        //     return 1;
+        // }
+        // return 0;
+        switch (adPrefAgeGroup) {
+            case '18-30': if (realAge >= 18 && realAge <= 30) return 1;
+            else if (realAge >= 18 - 5 && realAge <= 30 + 5) return 0.5; // kis tureshatar ha majdnem annyi
+            else return 0;
+            case '31-40': if (realAge >= 31 && realAge <= 40) return 1;
+            else if (realAge >= 31 - 5 && realAge <= 40 + 5) return 0.5;
+            else return 0;
+            case '41-50': if (realAge >= 41 && realAge <= 50) return 1;
+            else if (realAge >= 41 - 5 && realAge <= 50 + 5) return 0.5;
+            else return 0;
+            case '51-60': if (realAge >= 51 && realAge <= 60) return 1;
+            else if (realAge >= 51 - 5 && realAge <= 60 + 5) return 0.5;
+            else return 0;
+            case '60+': if (realAge >= 60 && realAge <= 125) return 1;
+            else if (realAge >= 60 - 5) return 0.5;
+            else return 0;
+
         }
-        return 0;
     }
 
     function calculateMinPeopleMatch(adMinPeople, realPeopleCount) {
@@ -152,7 +170,7 @@ const AdvertDisplayPage = ({ realTimeData }) => {
     function calculateTotalMatch(ad, realTimeData) {
         const emotionMatch = calculateEmotionMatch(ad.prefEmotion, realTimeData) * emotionWeight;
         const genderMatch = calculateGenderMatch(ad.prefGender, realTimeData.maleCount, realTimeData.femaleCount) * genderWeight;
-        const ageMatch = 0; //calculateAgeMatch(ad.prefAgeGroup, realTimeData.averageAge) * peopleWeight;
+        const ageMatch = calculateAgeMatch(ad.prefAgeGroup, realTimeData.averageAge) * peopleWeight;
         const minPeopleMatch = calculateMinPeopleMatch(ad.minPeople, realTimeData.peopleCount) * peopleWeight;
         const priceMatch = 0; // calculatePriceMatch(ad.price, realTimeData.price) * ad.priceWeight;
 
@@ -168,7 +186,7 @@ const AdvertDisplayPage = ({ realTimeData }) => {
         // Iterálunk az összes localStorage kulcs-érték páron
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            const adData = JSON.parse(localStorage.getItem(key)); 
+            const adData = JSON.parse(localStorage.getItem(key));
 
             // Kiszámoljuk a relevanciát
             const relevance = calculateTotalMatch(adData, realTimeData);
@@ -196,7 +214,7 @@ const AdvertDisplayPage = ({ realTimeData }) => {
             <div className="text-container">
                 <h1>Mutatott reklám</h1>
             </div>
-            <div>
+           {/* <div>
                 <h3>Real-Time Data:</h3>
                 {realTimeData ? (
                     <pre>{JSON.stringify(realTimeData, null, 2)}</pre>
@@ -204,12 +222,13 @@ const AdvertDisplayPage = ({ realTimeData }) => {
                     <p>No real-time data available.</p>
                 )}
             </div>
-
+            */}
 
             {bestAd ? (
                 <div>
                     <h3>Legrelevánsabb hirdetés:</h3>
-                    <pre>{JSON.stringify(bestAd, null, 2)}</pre>
+                    {/* <pre>{JSON.stringify(bestAd, null, 2)}</pre> */}
+                    <pre>{bestAd.name}</pre>
                     {bestAd.image ? (
                         <img
                             src={bestAd.image}

@@ -72,10 +72,10 @@ function App() {
                         <div className="file-upload-container">
                             <FileUpload setRealTimeData={setRealTimeData} />
                         </div>
-                        <div className="advert-display-container">
+                        <div className="advert-container">
                             <AdvertDisplayPage realTimeData={realTimeData} />
                         </div>
-                        <div className="advert-display-container">
+                        <div className="advert-container">
                             <FormPage />
                         </div>
                     </div>

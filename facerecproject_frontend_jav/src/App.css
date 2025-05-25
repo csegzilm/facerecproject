@@ -97,7 +97,7 @@
 }
 
 /* A komponensek szélessége és elrendezés */
-.file-upload-container, .advert-display-container {
+.file-upload-container, .advert-container {
   width: 45%;  /* Mindkét komponensnek 45%-os szélességet adunk */
   padding: 20px;
   border: 1px solid #ddd;

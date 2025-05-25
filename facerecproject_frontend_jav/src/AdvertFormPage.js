@@ -36,7 +36,7 @@ const AdvertFormPage = () => {
 
     return (
         <div style={{ padding: "20px" }}>
-            <h1>Hírdetés hozzáadása</h1>
+            <h1>Hirdetés hozzáadása</h1>
             <form onSubmit={handleFormSubmit}>
                 <div className="form-row">
                     <label>Név:</label>
@@ -48,7 +48,7 @@ const AdvertFormPage = () => {
                     />
                 </div>
                 <div className="form-row">
-                    <label>Preferált Minimum számú ember:</label>
+                    <label>Preferált minimum számú ember:</label>
                     <input
                         type="number"
                         value={minPeople}
