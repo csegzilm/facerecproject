@@ -1,0 +1,54 @@
+/* Alap űrlap stílusok */
+body {
+    background-color: #000; /* Az egész alkalmazás háttere fekete */
+    color: white;  /* Fehér szöveg a fekete háttéren */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Kép és szöveg konténer */
+.image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    width:90%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #282c34; /* Sötét háttér a konténerhez */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Kép stílusai */
+.image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Szöveges rész stílusai */
+.text-container {
+    text-align: center;
+    font-size: 1rem;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #61dafb; /* Kék színű cím */
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #fff; /* Fehér szöveg */
+}
+
+/* A szövegek közötti távolság és elrendezés */
+.text-container p:last-child {
+    margin-bottom: 0;
+}
