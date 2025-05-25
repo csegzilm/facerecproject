@@ -5,20 +5,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class PythonScriptHandler {
-    // private static Process emotionProcess, ageProcess, genderProcess;
     private static Process process;
 
     public static void startPythonScript(String pythonScript) {
         try {
             String path = "C:/Users/lorik/Desktop/Egyetem/6_2024_25_II_felev/Onlab/python proba/.venv/Scripts/python.exe"; //TODO: ez most hardcoded, végső implementációban ez nem előnyös
-            // ProcessBuilder pbEmotion = new ProcessBuilder(path, "-u", "src/main/resources/pythonScripts/script_with_websocket.py"); //TODO: Még nincsenek ezek a fájlok megadva, létrehozva
             //Az "-u" arra van, hogy a python kimenete azonnal kiíródjon (unbuffered mód), mert másképp bufferelődik és nem írja ki azonnal
             //ezzel debugolható a működés, tudjuk, hogy helyesen működik most
-
-            //pbEmotion.redirectErrorStream(true); // stdout és stderr összevonása (csak a szebb kimenet miatt)
-
-            // Ha relatív az útvonal, beállíthatjuk a working directoryt - majd a tisztításkor
-            //pb.directory(new java.io.File("src/main/resources/pythonScripts"));
 
             ProcessBuilder pbProcess = new ProcessBuilder(path, "-u", "src/main/resources/pythonScripts/" + pythonScript);
             pbProcess.redirectErrorStream(true);
