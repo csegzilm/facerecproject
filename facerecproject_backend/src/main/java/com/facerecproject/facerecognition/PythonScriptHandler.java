@@ -9,7 +9,7 @@ public class PythonScriptHandler {
 
     public static void startPythonScript(String pythonScript) {
         try {
-            String path = "C:/Users/lorik/Desktop/Egyetem/6_2024_25_II_felev/Onlab/python proba/.venv/Scripts/python.exe"; //TODO: ez most hardcoded, végső implementációban ez nem előnyös
+            String path = ".venv/Scripts/python.exe"; //Nem hardcodeolt, ez így a jó
             //Az "-u" arra van, hogy a python kimenete azonnal kiíródjon (unbuffered mód), mert másképp bufferelődik és nem írja ki azonnal
             //ezzel debugolható a működés, tudjuk, hogy helyesen működik most
 

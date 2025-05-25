@@ -29,7 +29,6 @@ public class ImageController {
         }
         InputStream is = file.getInputStream();
         List<Map<String, Object>> facesCoordinates = detectFaces(file);
-        // System.out.println(file.getOriginalFilename());
 
         return ResponseEntity.ok(Map.of(
                 "message", "Picture uploaded: " + file.getOriginalFilename(),
